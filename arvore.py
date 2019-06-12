@@ -14,7 +14,7 @@ def lerArray():
         data = np.array(data).reshape(7, 5)
     elif(sys.argv[1] == 'vote.txt'):
         data = np.array(data).reshape(409, 4)
-    elif(sys.argv[1]== 'contact-lenses.txt'):
+    elif(sys.argv[1] == 'contact-lenses.txt'):
         data = np.array(data).reshape(25, 4)
     arquivo.close()
     return data
@@ -80,10 +80,12 @@ def erroClassificacao(data, classe):
             else:
                 positivos += 1
 
-    if((positivos/(negativos + positivos)) > (negativos/(negativos + positivos))):
-        max = (positivos/(negativos + positivos))
+    total = negativos+positivos
+
+    if((positivos/(total)) > (negativos/(total))):
+        max = (positivos/(total))
     else:
-        max = (negativos/(negativos + positivos))
+        max = (negativos/(total))
 
     erro = 1 - max
     return erro
@@ -101,8 +103,10 @@ def gini_criterion(data, classe):
             else:
                 positivos += 1
 
-    gini = 1 - ((positivos/(negativos + positivos)) ** 2) - \
-        ((negativos/(negativos + positivos)) ** 2)
+    total = positivos + negativos
+
+    gini = 1 - ((positivos/(total)) ** 2) - ((negativos/(total)) ** 2)
+
     return gini
 
 
@@ -118,19 +122,20 @@ def entropy(data, classe):
             else:
                 positivos += 1
 
-    entropy = 0.0
+    total = positivos + negativos
+
     try:
-        entropy = -(positivos/(negativos + positivos) * log2(positivos/(negativos + positivos)) -
-                    negativos/(negativos + positivos) * log2(negativos/(negativos + positivos)))
+        entropy = -(positivos/(total) * log2(positivos/(total)) -
+                    negativos/(total) * log2(negativos/(total)))
     except:
-        print('Erro ao calcular a entropy')
+        entropy = 0.0
+        #print('Erro ao calcular a entropy')
 
     return entropy
 
 
 def infoGain(impPai, impEsq, impDir, total, qtdEsq, qtdDir):
 
-    #print(impPai, impEsq, impDir, total, qtdEsq, qtdDir)
     infoGain = impPai - ((qtdEsq * impEsq) + (qtdDir * impDir))/total
     return infoGain
 
@@ -216,7 +221,7 @@ def parte2():
             ganho = ganhoAtual
             coluna = i
 
-    print("Atributo escolhido: ", coluna+1,'-', dataSet[0][coluna])
+    print("Atributo escolhido: ", coluna+1, '-', dataSet[0][coluna])
 
     print('Impureza em ', sys.argv[1], ': ', impPai,
           '\nImpureza em ', sys.argv[2], ': ', impFilho1,
@@ -231,4 +236,3 @@ if __name__ == '__main__':
         parte1()
     else:
         parte2()
-
