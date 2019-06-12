@@ -81,13 +81,8 @@ def erroClassificacao(data, classe):
                 positivos += 1
 
     total = negativos+positivos
-
-    if((positivos/(total)) > (negativos/(total))):
-        max = (positivos/(total))
-    else:
-        max = (negativos/(total))
-
-    erro = 1 - max
+    erro = 1 - max((positivos/(negativos + positivos)),
+                   (negativos/(negativos + positivos)))
     return erro
 
 
@@ -123,21 +118,20 @@ def entropy(data, classe):
                 positivos += 1
 
     total = positivos + negativos
-
-    try:
-        entropy = -(positivos/(total) * log2(positivos/(total)) -
-                    negativos/(total) * log2(negativos/(total)))
-    except:
-        entropy = 0.0
-        #print('Erro ao calcular a entropy')
-
-    return entropy
+    
+    
+    positivos += 0.000001
+    negativos += 0.000001
+    
+    entropy = -(positivos/(total) * log2(positivos/(total)) -
+                negativos/(total) * log2(negativos/(total)))
+    return abs(entropy)
 
 
 def infoGain(impPai, impEsq, impDir, total, qtdEsq, qtdDir):
 
     infoGain = impPai - ((qtdEsq * impEsq) + (qtdDir * impDir))/total
-    return infoGain
+    return abs(infoGain)
 
 
 def parte1():
@@ -184,9 +178,9 @@ def parte1():
 
     ganho = infoGain(impNo3, impNo6, impNo7, lin6+lin7, lin6, lin7)
 
-    print('Impureza em ', sys.argv[1], ': ', impNo3,
-          '\nImpureza em ', sys.argv[2], ': ', impNo6,
-          '\nImpureza em ', sys.argv[3], ': ', impNo7,
+    print('Impureza em ', sys.argv[1], ': ', round(impNo3, 3),
+          '\nImpureza em ', sys.argv[2], ': ', round(impNo6, 3),
+          '\nImpureza em ', sys.argv[3], ': ', round(impNo7, 3),
           '\nGanho: ', round(ganho, 3)
           )
 
